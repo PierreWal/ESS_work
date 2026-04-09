@@ -1,0 +1,479 @@
+Introduction
+
+This document presents univariate and bivariate tables   of environmental attitudes  among respondents of  Round 11 of the European Social Survey  (2023-24) 
+
+
+
+```{r data}
+
+rm(list=ls())
+
+library(haven)
+library(survey)
+library(dplyr)
+library(knitr)
+library(gtsummary)
+library(ggplot2)
+library(weights)
+
+source("syntax/functions.R")
+source("syntax/labels_ess2_uk.R")
+
+datadir<-"~/Data/ess/ESS11e04_1/"
+
+ess.raw<-read_dta(paste0(datadir,"ESS11e04_1.dta")) 
+ess<-droplevels(ess.raw |>
+               select(all_of(c(ovars,exvars,auxvars,dvars,desvars))))
+
+#######################################################################```
+```
+
+
+
+```{r recode}
+source("syntax/recoding_ess2_uk.R")
+``` 
+
+
+
+## 1. Variables included 
+
+|Name|Id|Variable label|Valid responses |
+|----|--|---------------|----------------|
+agegroup| - |`{r} attr(ess.raw$agegroup, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$agegroup)))[1],big.mark = ",")`
+ccnthum|C30|`{r} attr(ess.raw$ccnthum, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$ccnthum)))[1],big.mark = ",")`
+ccrdprs|C31|`{r} attr(ess.raw$ccrdprs, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$ccrdprs)))[1],big.mark = ",")` 
+cntry|-| `{r} attr(ess.raw$cntry, "label")` |`{r} prettyNum(as.numeric(table(is.na(ess.raw$cntry)))[1],big.mark = ",")` 
+eisced|-| `{r} attr(ess.raw$eisced, "label")` |`{r} prettyNum(as.numeric(table(is.na(ess.raw$eisced)))[1],big.mark = ",")` 
+gndr| - |`{r} attr(ess.raw$gndr, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$gndr)))[1],big.mark = ",")`
+hincfel|  -|`{r} attr(ess.raw$hincfel, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$hincfel)))[1],big.mark = ",") `
+lrscale|B26| `{r} attr(ess.raw$lrscale, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$lrscale)))[1],big.mark = ",")`
+wrclmch|C32| `{r} attr(ess.raw$wrclmch, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$wrclmch)))[1],big.mark = ",")`
+
+: **Table 1: Original and derived variables used in the analysis** {tbl-colwidths="[25,5,65,5]"}
+
+
+
+  
+## 2. Variables recoding and operationalisation notes
+
+<!-- The original dataset includes `{r} prettyNum(nrow(ess.raw),big.mark = ",")` observations, of which `{r} prettyNum(nrow(ess),big.mark = ",")` respondents aged 50 and over. -->
+
+<!-- 1. Integrated household composition variable  `hhdtypb`  was constructed using the household grid variables `rshipa*`, and household size information.  -->
+<!-- 2. No information was available on the presence of grandchilddren -->
+<!-- 3. There is no clear variable recording exclusively caring for dependents: it is either amalgamated with housework (`hwrk`) or with helping others more broadly: `hlpfmly`. -->
+.<!-- 4. Whether respondents had internet connection was approximated using frequency of internet use. -->
+<!-- 5. Marital status was constructed in order to include informal partnership/cohabitation. -->
+<!-- 6. There are no variables measuring difficulties/limitations with daily life activities. A variable was constructed recording the number of health conditions instead.  -->
+
+
+
+
+## 3. Univariates results
+
+Results are presented as follows, under each tab below:
+  
+  1.  Unweighted frequencies and proportions of the original variables, unrecoded
+  2.  Weighted frequencies and proportions of the recoded (ie missing/invalid values grouped together) variables
+
+
+### 3.1 Univariates results overall
+
+
+::: {.panel-tabset}
+
+
+```{r univariates}
+#| results: asis
+#| echo: false
+
+
+source("syntax/univariates_ess2.R")
+
+```
+
+### 3.2 Univariates results (by country)
+
+:::: {.panel-tabset}
+
+
+```{r univariates_c}
+#| results: asis
+#| echo: false
+
+
+ source("syntax/univariates_country_ess2.R")
+
+```
+
+
+## 4. Outcome variables by sex, age, attitudes (overall)
+
+This section contains for each variable used in the study, the following contingency tables:
+
+  1. With voter turnout at the last national elections
+  2. With sex
+  3. With age, two and three categories
+
+All contingency tables were computed with weighted data and include  $\chi^2$ test of independence.
+
+
+### 4.1. Whether climate change is man-made 
+
+
+::: {.panel-tabset}
+
+```{r bivar1}
+#| results: asis
+#| echo: false
+
+for (v in bivars19) {
+
+cat(paste0("#### *Man made? by ",labs[[paste0(v,".f")]],"(",v, ")*"))
+  
+  
+  tmp.t<-svytable(as.formula(paste0("~ccnthum.fr +", v,".fr")), ess.s)
+  tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+  tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+  
+  print(kable(tmp.p))
+  cat('\n')
+  
+  
+  # t<-svychisq(as.formula(paste0("~", v,".fr","+ ccnthum.fr")), ess.s)
+  # print(t$method)
+  # cat('\n')
+  # 
+  # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+  
+  ################################################################################################
+  
+}
+
+cat('\n:::')
+
+```
+
+
+
+### **4.2. Responsibility about climate change **
+
+
+
+
+::: {.panel-tabset}
+
+```{r bivar2}
+#| results: asis
+#| echo: false
+
+for (v in bivars19) {
+  
+cat(paste0("#### *Responsibility by ",labs[[paste0(v,".f")]],"(",v, ")*"))
+
+    
+    tmp.t<-svytable(as.formula(paste0("~ccrdprs.fr + ", v,".fr")), ess.s)
+    tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+    tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+    
+    print(kable(tmp.p))
+    cat('\n')
+    
+    # t<-svychisq(as.formula(paste0("~", v,".fr","+ ccrdprs.fr")), ess.s)
+    # 
+    # print(t$method)
+    # cat('\n')
+    # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+    
+  cat('\n')
+  
+  ################################################################################################
+  
+}
+
+cat('\n:::')
+
+```
+
+### **4.3. Worry about climate change  **
+
+::: {.panel-tabset}
+
+```{r bivar3}
+#| results: asis
+#| echo: false
+
+for (v in bivars19) {
+
+cat(paste0("#### *Worry by ",labs[[paste0(v,".f")]],"(",v, ")*"))
+  
+  
+  tmp.t<-svytable(as.formula(paste0("~wrclmch.fr +", v,".fr")), ess.s)
+  tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+  tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+  
+  print(kable(tmp.p))
+  cat('\n')
+  
+  
+  # t<-svychisq(as.formula(paste0("~", v,".fr","+ wrclmch.fr")), ess.s)
+  # print(t$method)
+  # cat('\n')
+  # 
+  # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+  
+  ################################################################################################
+  
+}
+
+cat('\n:::')
+
+```
+
+
+## 5. Outcome variables by sex, age, attitudes (country level)
+
+
+:::: {.panel-tabset}
+
+
+```{r bicntry}
+#| results: asis
+#| echo: false
+
+for (c in levels(as.factor(ess$cntry))) {
+
+  
+ess.s<-svydesign(~psu,weights=~anweight,strata=~stratum,data=ess|>filter(cntry==c),nest=T)
+ 
+cat('### ', c, '\n')
+
+
+cat('::: {.panel-tabset}')
+
+cat('\n')
+cat('\n')
+
+
+for (v in ovars) {
+
+
+#   cat('#### ', labs[[paste0(v,".f")]], '\n')
+
+cat(paste0('#### ',labs[[paste0(v,".f")]],'\n'))
+
+      cat('\n')
+
+for (e in exvars) {
+      cat('\n')
+
+      cat('\n')
+
+cat(paste0('**',labs[[paste0(e,".f")]],'**'))
+
+      cat('\n')
+      cat('\n')
+  
+  
+    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".fr) + droplevels(", e,".fr)")), ess.s)
+    tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+    tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+
+    print(kable(tmp.p))
+    cat('\n')
+    cat('\n')
+
+}
+    # t<-svychisq(as.formula(paste0("~", v,".fr","+ cntry.fr")), ess.s)
+    #
+    # print(t$method)
+    # cat('\n')
+    # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+    cat('\n')
+
+  ################################################################################################
+
+
+  }
+
+cat('\n:::\n\n')
+
+
+}
+
+cat('\n::::')
+
+```
+
+
+## 6. Outcome variables (environmental attitudes)  by position on the left-right scale.
+
+
+6.1 Overall
+
+::: {.panel-tabset}
+
+
+```{r leftright_overall}
+#| results: asis
+#| echo: false
+
+
+  
+ess.s<-svydesign(~psu,weights=~anweight,strata=~stratum,data=ess|>filter(cntry==c),nest=T)
+ 
+#cat('### ', c, '\n')
+
+
+
+cat('\n')
+cat('\n')
+
+
+for (v in ovars[-4]) {
+
+
+#   cat('#### ', labs[[paste0(v,".f")]], '\n')
+
+cat(paste0('### ',labs[[paste0(v,".f")]],'\n'))
+
+      cat('\n')
+
+#for (e in exvars) {
+ #     cat('\n')
+
+      cat('\n')
+
+#cat(paste0('**',labs[[paste0(e,".f")]],'**'))
+
+#      cat('\n')
+#      cat('\n')
+  
+  
+    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".fr) + droplevels(lrscale.fr)")), ess.s)
+    tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+    tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+
+    print(kable(tmp.p))
+    cat('\n')
+    cat('\n')
+
+#}
+    # t<-svychisq(as.formula(paste0("~", v,".fr","+ cntry.fr")), ess.s)
+    #
+    # print(t$method)
+    # cat('\n')
+    # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+    cat('\n')
+
+  ################################################################################################
+
+
+  }
+
+
+cat('\n:::\n\n')
+
+
+```
+
+
+
+
+6.2 By country
+
+:::: {.panel-tabset}
+
+
+```{r leftright_country}
+#| results: asis
+#| echo: false
+
+for (c in levels(as.factor(ess$cntry))) {
+
+  
+ess.s<-svydesign(~psu,weights=~anweight,strata=~stratum,data=ess|>filter(cntry==c),nest=T)
+ 
+cat('### ', c, '\n')
+
+
+cat('::: {.panel-tabset}')
+
+cat('\n')
+cat('\n')
+
+
+for (v in ovars[-4]) {
+
+
+#   cat('#### ', labs[[paste0(v,".f")]], '\n')
+
+cat(paste0('#### ',labs[[paste0(v,".f")]],'\n'))
+
+      cat('\n')
+
+#for (e in exvars) {
+ #     cat('\n')
+
+      cat('\n')
+
+#cat(paste0('**',labs[[paste0(e,".f")]],'**'))
+
+#      cat('\n')
+#      cat('\n')
+  
+  
+    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".fr) + droplevels(lrscale.fr)")), ess.s)
+    tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+    tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+
+    print(kable(tmp.p))
+    cat('\n')
+    cat('\n')
+
+#}
+    # t<-svychisq(as.formula(paste0("~", v,".fr","+ cntry.fr")), ess.s)
+    #
+    # print(t$method)
+    # cat('\n')
+    # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+    cat('\n')
+
+  ################################################################################################
+
+
+  }
+
+cat('\n:::\n\n')
+
+
+}
+
+cat('\n::::')
+
+```
+
+
+
