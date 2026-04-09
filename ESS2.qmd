@@ -1,8 +1,11 @@
-Introduction
+# Version 1.2
 
-This document presents univariate and bivariate tables   of environmental attitudes  among respondents of  Round 11 of the European Social Survey  (2023-24) 
+This document presents univariate and bivariate tables   of environmental attitudes  among Round 11 respondents  of the European Social Survey  (2023-24) 
 
+### Version history
 
+- 1.2 8 March 2026: Fixed sample size in section 4, switch to unrecoded left-right scale
+- 1.1 8 March 2026: Initial version
 
 ```{r data}
 
@@ -44,7 +47,7 @@ agegroup| - |`{r} attr(ess.raw$agegroup, "label")`|`{r} prettyNum(as.numeric(tab
 ccnthum|C30|`{r} attr(ess.raw$ccnthum, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$ccnthum)))[1],big.mark = ",")`
 ccrdprs|C31|`{r} attr(ess.raw$ccrdprs, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$ccrdprs)))[1],big.mark = ",")` 
 cntry|-| `{r} attr(ess.raw$cntry, "label")` |`{r} prettyNum(as.numeric(table(is.na(ess.raw$cntry)))[1],big.mark = ",")` 
-eisced|-| `{r} attr(ess.raw$eisced, "label")` |`{r} prettyNum(as.numeric(table(is.na(ess.raw$eisced)))[1],big.mark = ",")` 
+eisced|-| `{r} attr(ess.raw$eisced, "label")` |`{r} prettyNum(as.numeric(table(is.na(ess.raw$eisced)))[1],big.mark = ",")`
 gndr| - |`{r} attr(ess.raw$gndr, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$gndr)))[1],big.mark = ",")`
 hincfel|  -|`{r} attr(ess.raw$hincfel, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$hincfel)))[1],big.mark = ",") `
 lrscale|B26| `{r} attr(ess.raw$lrscale, "label")`|`{r} prettyNum(as.numeric(table(is.na(ess.raw$lrscale)))[1],big.mark = ",")`
@@ -109,13 +112,16 @@ source("syntax/univariates_ess2.R")
 
 ## 4. Outcome variables by sex, age, attitudes (overall)
 
-This section contains for each variable used in the study, the following contingency tables:
+This section contains for each outcome variable,  contingency tables with 
 
-  1. With voter turnout at the last national elections
-  2. With sex
-  3. With age, two and three categories
+ - Sex/gender
+ - Age banded
+ - Subjective financial situation
+ - Highest level of qualification
+ - Interest in politics
+ - Country
 
-All contingency tables were computed with weighted data and include  $\chi^2$ test of independence.
+All contingency tables were computed with weighted data.
 
 
 ### 4.1. Whether climate change is man-made 
@@ -160,7 +166,7 @@ cat('\n:::')
 
 
 
-### **4.2. Responsibility about climate change **
+### 4.2. Sense of responsibility about climate change 
 
 
 
@@ -201,7 +207,7 @@ cat('\n:::')
 
 ```
 
-### **4.3. Worry about climate change  **
+### 4.3. Worry about climate change  
 
 ::: {.panel-tabset}
 
@@ -215,6 +221,46 @@ cat(paste0("#### *Worry by ",labs[[paste0(v,".f")]],"(",v, ")*"))
   
   
   tmp.t<-svytable(as.formula(paste0("~wrclmch.fr +", v,".fr")), ess.s)
+  tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+  tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+  
+  print(kable(tmp.p))
+  cat('\n')
+  
+  
+  # t<-svychisq(as.formula(paste0("~", v,".fr","+ wrclmch.fr")), ess.s)
+  # print(t$method)
+  # cat('\n')
+  # 
+  # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+  
+  ################################################################################################
+  
+}
+
+cat('\n:::')
+
+```
+
+
+### 4.4 Position on the left-right scale  
+
+::: {.panel-tabset}
+
+```{r bivar4}
+#| results: asis
+#| echo: false
+
+for (v in bivars19) {
+
+cat(paste0("#### *Left vs right by ",labs[[paste0(v,".f")]],"(",v, ")*"))
+  
+  
+  tmp.t<-svytable(as.formula(paste0("~lrscale.f +", v,".fr")), ess.s)
   tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
   tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
   rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
@@ -285,7 +331,7 @@ cat(paste0('**',labs[[paste0(e,".f")]],'**'))
       cat('\n')
   
   
-    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".fr) + droplevels(", e,".fr)")), ess.s)
+    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".f) + droplevels(", e,".fr)")), ess.s)
     tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
     tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
   rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
@@ -364,7 +410,7 @@ cat(paste0('### ',labs[[paste0(v,".f")]],'\n'))
 #      cat('\n')
   
   
-    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".fr) + droplevels(lrscale.fr)")), ess.s)
+    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".fr) + droplevels(lrscale.f)")), ess.s)
     tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
     tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
   rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
@@ -441,7 +487,7 @@ cat(paste0('#### ',labs[[paste0(v,".f")]],'\n'))
 #      cat('\n')
   
   
-    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".fr) + droplevels(lrscale.fr)")), ess.s)
+    tmp.t<-svytable(as.formula(paste0("~droplevels(", v,".fr) + droplevels(lrscale.f)")), ess.s)
     tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
     tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
   rownames(tmp.p)<-c("",rownames(tmp.t),"Total")

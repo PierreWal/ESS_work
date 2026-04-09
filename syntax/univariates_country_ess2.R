@@ -39,3 +39,7 @@ for (c in levels(as.factor(ess$cntry))) {
 }
 
 cat('\n::::')
+
+ess.s<-svydesign(~psu,weights=~anweight,strata=~stratum,data=ess,nest=T)
+
+
