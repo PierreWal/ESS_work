@@ -1,13 +1,13 @@
 project:
   type: website
   output-dir: docs
-  title: "ELSA/BES/ESS voting patterns study Exploratory analysis  - draft version 9"
+  title: "ESS environmental attitudes  study exploratory analysis  - draft version 1"
   render:
     - index.qmd
-    - ELSA.qmd
-    - BES.qmd
-    - ESS.qmd
-    - ESS_uk.qmd
+#    - ELSA.qmd
+#    - BES.qmd
+    - ESS2.qmd
+#    - ESS_uk.qmd
 
 
 website:  
@@ -17,14 +17,8 @@ website:
      contents:
       - text: "Introduction"
         href: index.qmd
-      - text: "ELSA"
-        href: ELSA.qmd
-      - text: "BES"
-        href: BES.qmd
       - text: "ESS"
-        href: ESS.qmd
-      - text: "ESS - UK only"
-        href: ESS_uk.qmd
+        href: ESS2.qmd
 
 #bibliography: weighting_refs.bib
 #nocite: |
