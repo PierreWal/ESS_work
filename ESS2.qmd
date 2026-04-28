@@ -1,11 +1,12 @@
-# Version 1.2
-
-This document presents univariate and bivariate tables   of environmental attitudes  among Round 11 respondents  of the European Social Survey  (2023-24) 
-
 ### Version history
 
 - 1.2 8 March 2026: Fixed sample size in section 4, switch to unrecoded left-right scale
 - 1.1 8 March 2026: Initial version
+
+## Introduction
+
+This document presents univariate and bivariate tables   of environmental attitudes  among Round 11 respondents  of the European Social Survey  (2023-24) 
+
 
 ```{r data}
 
@@ -105,7 +106,7 @@ source("syntax/univariates_ess2.R")
 #| echo: false
 
 
- source("syntax/univariates_country_ess2.R")
+source("syntax/univariates_country_ess2.R")
 
 ```
 

@@ -1,4 +1,4 @@
-# ESS voting environmental  study
+# ESS/WVS voting environmental  study
 
-This is the landing page for the draft ESS environmental attitudes study.
+This is the landing page for the draft ESS/WVS environmental attitudes study.
  
