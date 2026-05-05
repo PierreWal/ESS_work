@@ -1,14 +1,14 @@
 project:
   type: website
   output-dir: docs
-  title: "Environmental attitudes  study exploratory analysis"
+  title: "Environmental attitudes   exploratory analysis"
   render:
     - index.qmd
-#    - ELSA.qmd
-#    - BES.qmd
-    - ESS2.qmd
+    - ESS11.qmd
+    - ESS10.qmd
+    - ESS9.qmd
+    - ESS8.qmd
     - wvs.qmd
-#    - ESS_uk.qmd
 
 
 website:  
@@ -19,7 +19,13 @@ website:
       - text: "Introduction"
         href: index.qmd
       - text: "European Social Survey Round 11"
-        href: ESS2.qmd
+        href: ESS11.qmd
+      - text: "European Social Survey Round 10"
+        href: ESS10.qmd
+      - text: "European Social Survey Round 9"
+        href: ESS9.qmd
+      - text: "European Social Survey Round 8"
+        href: ESS8.qmd
       - text: "World Value Survey Wave 7"
         href: wvs.qmd
 

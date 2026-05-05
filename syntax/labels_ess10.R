@@ -1,10 +1,7 @@
-ovars<-c("ccnthum","ccrdprs","wrclmch","lrscale")
+ovars<-c("ccnthum","ccrdprs","wrclmch","impenv", "lrscale")
 
 exvars<-c("gndr", "agegroup", "hincfel", "eisced","polintr"
           ) 
-auxvars<-c("agea", "hhmmb","hltphhc", "hltphbp", "isco08", "rshpsts", "rshpsgb",
-           "rshipa2","rshipa3","rshipa4","rshipa5","rshipa6","rshipa7",
-           "rshipa8","rshipa9","rshipa10","rshipa11","rshipa12","rshipa13")
 
 desvars<-c("psu","anweight","stratum")
 
@@ -29,6 +26,7 @@ labs<-list(
   lrscale.f="Placement on left right scale",
   cntry.f="Country",
   eisced.f="Educational level",
+  impenv.f="Important to care for nature and environment",
 #  happy.f="Happiness",
   # health.f="Self-reported general health V1",
   # health2.f="Self-reported general health V2",
@@ -46,7 +44,7 @@ labs<-list(
   # hltphsh.f="Severe headaches",
   # hltphdi.f="Diabetes",
   # hswrk.f="Whether doing house- or care work",
-  isco1.f="Occupation, ISCO08 1 digit",
+  # isco1.f="Occupation, ISCO08 1 digit",
   # maritalb.f="Marital/relationship status",
   # mbtru.f="Trade union or similar membership",
   # mnactic.f= "Economic activity",

@@ -6,25 +6,25 @@
 
 
 ## Recode of relationship to person nr1
-for(nr in 2:13){
-  ess[,ncol(ess)+1]<-ifelse(ess[paste0("rshipa",nr)]!=2 | is.na(ess[paste0("rshipa",nr)]),0,1)
-  names(ess)[ncol(ess)]<-paste0("nrshipa",nr)
-}
+# for(nr in 2:13){
+#   ess[,ncol(ess)+1]<-ifelse(ess[paste0("rshipa",nr)]!=2 | is.na(ess[paste0("rshipa",nr)]),0,1)
+#   names(ess)[ncol(ess)]<-paste0("nrshipa",nr)
+# }
 
 ##########################################################
-
-
+# 
+# 
 ess<-ess|>mutate(
-  hasprt=ifelse(hhmmb>1 & (rshipa2==1 | rshipa3==1 | rshipa4==1 | 
-                             rshipa5==1 | rshipa6==1 | rshipa7==1
-                           | rshipa8==1 | rshipa9==1 | rshipa10==1
-                           | rshipa11==1 | rshipa12==1 | rshipa13==1),
-                "Cohab", "No cohab" ),
-  haschi=ifelse(hhmmb>1 & (rshipa2==2 | rshipa3==2 | rshipa4==2 | 
-                             rshipa5==2 | rshipa6==2 | rshipa7==2
-                           | rshipa8==2 | rshipa9==2 | rshipa10==2
-                           | rshipa11==2 | rshipa12==2 | rshipa13==2), 
-                "Kids", "No kids" ),
+#   hasprt=ifelse(hhmmb>1 & (rshipa2==1 | rshipa3==1 | rshipa4==1 | 
+#                              rshipa5==1 | rshipa6==1 | rshipa7==1
+#                            | rshipa8==1 | rshipa9==1 | rshipa10==1
+#                            | rshipa11==1 | rshipa12==1 | rshipa13==1),
+#                 "Cohab", "No cohab" ),
+#   haschi=ifelse(hhmmb>1 & (rshipa2==2 | rshipa3==2 | rshipa4==2 | 
+#                              rshipa5==2 | rshipa6==2 | rshipa7==2
+#                            | rshipa8==2 | rshipa9==2 | rshipa10==2
+#                            | rshipa11==2 | rshipa12==2 | rshipa13==2), 
+#                 "Kids", "No kids" ),
   hincfel.f=as_factor(hincfel, "both"),
   hincfel.fr=as.factor(ifelse(!is.na(hincfel),hincfel,NA)),     
   # fltlnl.f=as_factor(fltlnl, "both"),
@@ -32,26 +32,28 @@ ess<-ess|>mutate(
   #                               fltlnl== 2  ~ "Some of the time",
   #                               fltlnl== 3 | fltlnl== 4  ~ "Most/all of the time")
   # ),
+  impenv.f=factor(as_factor(impenv),ordered=T),
+  impenv.fr=impenv.f,
   gndr.f=as_factor(gndr, "both"),
   gndr.fr=droplevels(as_factor(gndr, "both")),
-    nrchi=(nrshipa2+nrshipa3+nrshipa4+
-           nrshipa5+nrshipa6+nrshipa7+
-           nrshipa8+nrshipa9+nrshipa10+
-           nrshipa11+nrshipa12+nrshipa13),
-  hhdtypb.f=as.ordered(case_when(
-    hhmmb==0 | hhmmb==1 ~ "Single person HH",  
-    hhmmb==2 & rshipa2==1 ~"Two persons (couple) HH",
-    hhmmb==(nrchi+1) & nrchi>0 ~"Single parent",   
-    hhmmb==nrchi+2 & hasprt=="Cohab" ~"Nuclear family",
-    .default="Other"
-  )),
-  hhdtypb.fr=as.factor(case_when(
-    hhmmb==0 | hhmmb==1 ~ "Single person HH",  
-    hhmmb==2 & rshipa2==1 ~"Two persons (couple) HH",
-    hhmmb==(nrchi+1) & nrchi>0 ~"Single parent",   
-    hhmmb==nrchi+2 & hasprt=="Cohab" ~"Nuclear family",
-    .default="Other"
-  )),
+  #   nrchi=(nrshipa2+nrshipa3+nrshipa4+
+  #          nrshipa5+nrshipa6+nrshipa7+
+  #          nrshipa8+nrshipa9+nrshipa10+
+  #          nrshipa11+nrshipa12+nrshipa13),
+  # hhdtypb.f=as.ordered(case_when(
+  #   hhmmb==0 | hhmmb==1 ~ "Single person HH",  
+  #   hhmmb==2 & rshipa2==1 ~"Two persons (couple) HH",
+  #   hhmmb==(nrchi+1) & nrchi>0 ~"Single parent",   
+  #   hhmmb==nrchi+2 & hasprt=="Cohab" ~"Nuclear family",
+  #   .default="Other"
+  # )),
+  # hhdtypb.fr=as.factor(case_when(
+  #   hhmmb==0 | hhmmb==1 ~ "Single person HH",  
+  #   hhmmb==2 & rshipa2==1 ~"Two persons (couple) HH",
+  #   hhmmb==(nrchi+1) & nrchi>0 ~"Single parent",   
+  #   hhmmb==nrchi+2 & hasprt=="Cohab" ~"Nuclear family",
+  #   .default="Other"
+  # )),
   cntry.f=factor(as_factor(cntry),ordered=T),
   cntry.fr=factor(as_factor(cntry),ordered=T),
   agegroup.f=factor(as_factor(agegroup),ordered=T),
@@ -80,28 +82,28 @@ ess<-ess|>mutate(
   #                                  rlgatnd== 4 | rlgatnd== 5 ~ "Less than weekly",
   #                                  rlgatnd== 6 | rlgatnd== 7  ~ "Rarely or never")
   # ),
-  isconum=as.integer(isco08/1000),
-  isco1.f=as.factor(case_when(
-    isconum==0 ~ "0-Armed Forces",
-    isconum==1 ~"1-Managers",   
-    isconum==2 ~"2-Professionals", 
-    isconum==3 ~ "3-Technicians and Associate Professionals",
-    isconum==4 ~  "4-Clerical Support Workers", 
-    isconum==5 ~ "5-Service and sales",
-    isconum==6 ~ "6-Skilled Agricultural, Forestry and Fishery Workers", 
-    isconum==7 ~ "7-Craft and Related Trades Workers",
-    isconum==8 ~ "8-Plant and Machine Operators, and Assemblers", 
-    isconum==9 ~ "9-Elementary Occupations"
-  )),
-  isco1.fr=as.factor(case_when(
-    isconum==1 ~"1-Managers",   
-    isconum==2 ~"2-Professionals", 
-    isconum==3 ~ "3-Technicians and Associate Professionals",
-    isconum==4 | isconum==5  ~  "4+5-Clerical Support, Service and sales",
-    isconum==6 | isconum==7~ "6+7-Skilled Agric., forest., fishery, craft and related",
-    isconum==8 ~ "Plant and Machine Operators, and Assemblers", 
-    isconum==9 ~ "Elementary Occupations"
-  )),
+  # isconum=as.integer(isco08/1000),
+  # isco1.f=as.factor(case_when(
+  #   isconum==0 ~ "0-Armed Forces",
+  #   isconum==1 ~"1-Managers",   
+  #   isconum==2 ~"2-Professionals", 
+  #   isconum==3 ~ "3-Technicians and Associate Professionals",
+  #   isconum==4 ~  "4-Clerical Support Workers", 
+  #   isconum==5 ~ "5-Service and sales",
+  #   isconum==6 ~ "6-Skilled Agricultural, Forestry and Fishery Workers", 
+  #   isconum==7 ~ "7-Craft and Related Trades Workers",
+  #   isconum==8 ~ "8-Plant and Machine Operators, and Assemblers", 
+  #   isconum==9 ~ "9-Elementary Occupations"
+  # )),
+  # isco1.fr=as.factor(case_when(
+  #   isconum==1 ~"1-Managers",   
+  #   isconum==2 ~"2-Professionals", 
+  #   isconum==3 ~ "3-Technicians and Associate Professionals",
+  #   isconum==4 | isconum==5  ~  "4+5-Clerical Support, Service and sales",
+  #   isconum==6 | isconum==7~ "6+7-Skilled Agric., forest., fishery, craft and related",
+  #   isconum==8 ~ "Plant and Machine Operators, and Assemblers", 
+  #   isconum==9 ~ "Elementary Occupations"
+  # )),
   # AgeCat2.f=as.factor(case_when(
   #   agea>=50 & agea<70 ~ "50-69",
   #   agea>=70 ~ "70+"
