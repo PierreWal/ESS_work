@@ -1,8 +1,5 @@
-### Version history
+## European Social Survey Round 8
 
-- First  draft - 5 May 2026
-
-## Introduction
 
 This document presents univariate and bivariate tables   of environmental attitudes  among Round 8 respondents  of the European Social Survey  (2016) 
 

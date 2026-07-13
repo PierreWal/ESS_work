@@ -1,8 +1,4 @@
-### Version history
-
-- First draft - 5 May 2026
-
-## Introduction
+## European Social Survey Round 10
 
 This document presents univariate and bivariate tables   of environmental attitudes  among Round 10 respondents  of the European Social Survey  (2020) 
 

@@ -1,9 +1,4 @@
-### Version history
-
-- 1.2 8 March 2026: Fixed sample size in section 4, switch to unrecoded left-right scale
-- 1.1 8 March 2026: Initial version
-
-## Introduction
+## European Social Survey Round 11
 
 This document presents univariate and bivariate tables   of environmental attitudes  among Round 11 respondents  of the European Social Survey  (2023-24) 
 
@@ -29,7 +24,6 @@ ess.raw<-read_dta(paste0(datadir,"ESS11e04_1.dta"))
 ess<-droplevels(ess.raw |>
                select(all_of(c(ovars,exvars,auxvars,dvars,desvars))))
 
-#######################################################################```
 ```
 
 

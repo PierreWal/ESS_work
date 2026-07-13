@@ -4,18 +4,30 @@
 
 
 wvs<-wvs|>mutate(
-  Q111.f=as_factor(Q111, "both"),
-  Q111.fr=droplevels(as_factor(Q111, "both")),
-  Q240.f=as_factor(Q240, "both"),
-  Q240.fr=droplevels(as_factor(Q240, "both")),
-  Q260.f=as_factor(Q260, "both"),
-  Q260.fr=droplevels(as_factor(Q260, "both")),
-  Q275.f=as_factor(Q275, "both"),
-  Q275.fr=droplevels(as_factor(Q275, "both")),
-  X003R.f=as_factor(X003R, "both"),
-  X003R.fr=droplevels(as_factor(X003R, "both")),
-  C_COW_NUM.f=as_factor(C_COW_NUM, "both"),
-  C_COW_NUM.fr=droplevels(as_factor(C_COW_NUM, "both"))
+  V104.f=as_factor(V104, "both"),
+  V104.fr=droplevels(as_factor(V104, "both")),
+  V114.f=as_factor(V114, "both"),
+  V114.fr=droplevels(as_factor(V114, "both")),
+  V235.f=as_factor(V235, "both"),
+  V235.fr=droplevels(as_factor(V235, "both")),
+  V238.f=as_factor(V238, "both"),
+  V238.f[is.na(V238.f)]<-"NA", 
+  V238.fr=droplevels(as_factor(V238, "both")),
+  V238.fr[is.na(V238.fr)]<-"NA",
+  V237.f=as_factor(V237, "both"),
+  V237.fr=as.factor(
+  case_when(
+  is.na(V237) ~ "NA",
+  V237>=12 & V237<18 ~ "Age less than 18",
+  V237>=18 & V237<26 ~ "18-25",
+  V237>=26 & V237<37 ~ "26-36",
+  V237>=37 & V237<48 ~ "37-47",
+  V237>=48 & V237<59 ~ "48-58",
+  V237>=59 & V237<70 ~ "59-69",
+  V237>=70 & V237<121 ~ "More than 70")
+),
+  COW.f=as_factor(COW, "both"),
+  COW.fr=droplevels(as_factor(COW, "both"))
 
 
   
@@ -139,8 +151,8 @@ wvs<-wvs|>mutate(
   
 )            
 
-for(vr in names(labs[-19])){                        ### Leaving AgeCaat out
-  attr(wvs[vr],"label")<-labs[[vr]]
+for(vr in names(labs5[-19])){                        ### Leaving AgeCaat out
+  attr(wvs[vr],"label")<-labs5[[vr]]
 }
 
 # levels(wvs$hincfel.fr)<-levels(as_factor(wvs$hincfel))[1:4]

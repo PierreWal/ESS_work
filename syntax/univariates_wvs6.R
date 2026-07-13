@@ -1,16 +1,16 @@
 ### Univariates analysis
 
-wvs.s<-svydesign(~C_COW_NUM,weights=~W_WEIGHT,data=wvs,nest=T)
+wvs.s<-svydesign(~cow,weights=~V258,data=wvs,nest=T)
 
 # Apply the function to all  variables 
 
-rslt.u<-  lapply(c(uvars), function(v) vfreq(v, wvs))
+rslt.u<-  lapply(c(uvars6), function(v) vfreq(v, wvs))
 
-rslt.r <- lapply(c(rvars), function(v) wfreq2(v, wvs.s) )
+rslt.r <- lapply(c(rvars6), function(v) wfreq2(v, wvs.s) )
 
 
 for (i in 1:length(rslt.u)) {
-  cat('#### ', labs[[c(uvars,dvars)[i]]], '\n')
+  cat('#### ', labs6[[c(uvars6,dvars6)[i]]], '\n')
   
   cat(paste0("##### **Unweighted frequencies  **", '\n'))
   print(rslt.u[[i]])

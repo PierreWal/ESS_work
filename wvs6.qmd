@@ -1,0 +1,299 @@
+## World Value Survey Wave 6
+
+This page presents descriptive  tables  from the World Value Survey Wave 6, focusing on  left-right positioning and attitudes towards environmental breakdown.  
+Below are  the list of variables used in the analysis, followed by uni- and bivariate tables, overall and by country. 
+
+```{r data}
+rm(list=ls())
+
+library(haven)
+library(survey)
+library(dplyr)
+library(knitr)
+library(gtsummary)
+library(ggplot2)
+library(weights)
+library(forcats)
+
+datadir2<-"~/Data/wvs/"
+
+source("syntax/functions.R")
+source("syntax/labels_wvs.R")
+
+wvs.raw<-read_dta(paste0(datadir2,"WV6_Data_stata_v20201117.dta")) 
+
+wvs<-droplevels(wvs.raw |>
+               select(all_of(c(wovars6,wexvars6,wivars6,dvars6)))|>
+               filter(cow!=52 & cow!=645 & cow!=651  & cow!=663 &  
+                      cow!=670   & cow!=690      & cow!=694  & cow!=710 &
+                      cow!=830)) ## dropping Iraq, Egypt, Iran, China outcomes var are NA
+
+```
+
+## 1. Variables included in the analysis
+
+|Name|Variable label|Valid responses |
+|----|---------------|----------------|
+cow| `{r} attr(wvs$cow, "label")` |`{r} prettyNum(as.numeric(table(is.na(wvs$cow>0)))[1],big.mark = ",")`
+V81|`{r} attr(wvs$V81, "label")`|`{r} prettyNum(as.numeric(table((wvs$V81>0))),big.mark = ",")`
+V95|`{r} attr(wvs$V95, "label")`|`{r} prettyNum(as.numeric(table((wvs$V95>0))),big.mark = ",")`
+V240|`{r} attr(wvs$V240, "label")`|`{r} prettyNum(as.numeric(table((wvs$V240>0))),big.mark = ",")` 
+X003R|`{r} attr(wvs$X003R, "label")` |`{r} prettyNum(as.numeric(table((wvs$X003R>0))),big.mark = ",")` 
+V248|`{r} attr(wvs$V248, "label")`|`{r} prettyNum(as.numeric(table((wvs$V248>0))),big.mark = ",")`
+
+
+: **Table 1: Original and derived variables used in the analysis** {tbl-colwidths="[25,70,5]"}
+
+
+```{r recode}
+source("syntax/recoding_wvs6.R")
+```
+
+
+## 2. Univariates results
+
+
+### 2.1 Overall
+
+
+::: {.panel-tabset}
+
+
+
+```{r univ}
+#| output: asis
+  
+source("syntax/univariates_wvs6.R")
+
+```
+
+
+
+### 2.2 By country
+
+:::: {.panel-tabset}
+
+
+```{r univariates_c}
+#| results: asis
+
+source("syntax/univariates_country_wvs6.R")
+
+```
+
+
+
+## 3. Outcome variables by sex, age, education - overall (weighted)
+
+### 3.1 Overall
+
+
+::: {.panel-tabset}
+
+```{r bivar1}
+#| results: asis
+#| echo: false
+
+for (v in wexvars6) {
+
+cat(paste0("#### Crosstab by",labs6[[paste0(v,".f")]],"(",v, ")"))
+  
+cat('\n')  
+cat("**Left-right political scale**")
+cat('\n')
+
+  tmp.t<-svytable(as.formula(paste0("~V95.fr +", v,".fr")), wvs.s)
+  tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+  tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+  
+  print(kable(tmp.p))
+  cat('\n')
+  
+  
+  # t<-svychisq(as.formula(paste0("~", v,".fr","+ ccnthum.fr")), ess.s)
+  # print(t$method)
+  # cat('\n')
+  # 
+  # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+  cat('\n')
+  cat('\n')
+  
+  ################################################################################################
+
+#cat(paste0("#### *Protecting environment vs. Economic growth by ",labs5[[paste0(v,".f")]],"(",v, ")*"))
+cat("**Protecting environment vs. Economic growth**")
+  
+cat('\n')
+  
+  tmp.t<-svytable(as.formula(paste0("~V81.fr +", v,".fr")), wvs.s)
+  tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+  tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+  rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+  names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+  
+  print(kable(tmp.p))
+  cat('\n')
+  
+  
+  # t<-svychisq(as.formula(paste0("~", v,".fr","+ ccnthum.fr")), ess.s)
+  # print(t$method)
+  # cat('\n')
+  # 
+  # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+
+  
+  
+  # t<-svychisq(as.formula(paste0("~", v,".fr","+ ccnthum.fr")), ess.s)
+  # print(t$method)
+  # cat('\n')
+  # 
+  # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+    
+
+}
+
+cat('\n:::')
+
+```
+
+
+### 3.2 Overall  Outcome variables by sex, age, education (weighted) - country level
+
+
+:::: {.panel-tabset}
+
+
+
+```{r bicntry}
+#| results: asis
+#| echo: false
+
+wvs$cow.f<-droplevels(wvs$cow.f)
+for (c in levels(wvs$cow.f)) {
+
+  
+wvs.s<-svydesign(~1,weights=~V258,data=wvs |> filter(cow.f==c)|> droplevels(),nest=T)
+ 
+cat('### ', c, '\n')
+
+
+cat('::: {.panel-tabset}')
+
+cat('\n')
+
+
+for (v in wovars6) {
+
+
+#   cat('#### ', labs5[[paste0(v,".f")]], '\n')
+
+cat(paste0('#### ',labs5[[paste0(v,".fr")]],'\n'))
+
+cat('\n')
+
+for (e in bivars6) {
+
+cat('\n')
+
+cat(paste0('**',labs5[[paste0(e,".fr")]],'** \n'))
+
+
+  
+tmp.t<-svytable(as.formula(paste0("~", v,".fr + ", e,".fr")), wvs.s)
+tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+
+print(kable(tmp.p))
+cat('\n')
+
+}
+    # t<-svychisq(as.formula(paste0("~", v,".fr","+ cntry.fr")), ess.s)
+    #
+    # print(t$method)
+    # cat('\n')
+    # print(c(round(c(t$statistic,t$parameter[1], t$p.value),3)))
+
+  cat('\n')
+
+
+  ################################################################################################
+
+
+  }
+
+cat('\n:::\n\n')
+
+
+}
+
+cat('\n::::')
+    cat('\n')
+```
+
+
+## 4. Environmental views by left-right position (weighted)
+
+
+### 4.1 Overall
+```{r lr}
+#| results: asis
+#| echo: false
+
+wvs.s<-svydesign(~cow,weights=~V258,data=wvs,nest=T)
+tmp.t<-svytable(~V81.fr + V95.fr, wvs.s)
+tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+
+print(kable(tmp.p))
+cat('\n')
+```
+### 4.2 Country-level
+
+::: {.panel-tabset}
+
+```{r lrcountry}
+#| results: asis
+#| echo: false
+
+for (c in levels(wvs$cow.f)) {
+
+  wvs.s<-svydesign(~1,weights=~V258,data=wvs |> filter(cow.f==c)|> droplevels(),nest=T)
+  
+
+    
+cat('#### ', c, '\n')
+  
+  
+
+tmp.t<-svytable(~V81.fr + V95.fr, wvs.s)
+tmp.p<-data.frame(do.call(cbind, Map(cbind, as.data.frame.matrix(round(tmp.t,1)), as.data.frame.matrix(rowPct(tmp.t)))))
+tmp.p<-rbind(rep(c("Freq","%"),ncol(tmp.p)/2),tmp.p,colSums(tmp.p))
+rownames(tmp.p)<-c("",rownames(tmp.t),"Total")
+names(tmp.p)<-c(rbind(colnames(tmp.t)," "))
+
+print(kable(tmp.p))
+cat('\n')
+
+
+
+cat('\n')
+  
+  
+  
+}
+
+cat('\n:::')
+
+cat('\n')
+```

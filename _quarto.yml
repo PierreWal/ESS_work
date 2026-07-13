@@ -8,7 +8,11 @@ project:
     - ESS10.qmd
     - ESS9.qmd
     - ESS8.qmd
-    - wvs.qmd
+    - wvs3.qmd
+    - wvs4.qmd
+    - wvs5.qmd
+    - wvs6.qmd
+    - wvs7.qmd
 
 
 website:  
@@ -26,8 +30,16 @@ website:
         href: ESS9.qmd
       - text: "European Social Survey Round 8"
         href: ESS8.qmd
+      - text: "World Value Survey Wave 3"
+        href: wvs3.qmd
+      - text: "World Value Survey Wave 4"
+        href: wvs4.qmd
+      - text: "World Value Survey Wave 5"
+        href: wvs5.qmd
+      - text: "World Value Survey Wave 6"
+        href: wvs6.qmd
       - text: "World Value Survey Wave 7"
-        href: wvs.qmd
+        href: wvs7.qmd
 
 #bibliography: weighting_refs.bib
 #nocite: |

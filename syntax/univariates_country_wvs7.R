@@ -4,9 +4,9 @@ for (c in levels(wvs$C_COW_NUM.f)) {
   
 #  wvs.s<-svydesign(~psu,weights=~anweight,strata=~stratum,data=ess|>filter(cntry==c),nest=T)
 
-  rslt.u<-  lapply(c(uvars[-length(uvars)]), function(v) vfreq(v, wvs|>filter(C_COW_NUM.f==c)))
+  rslt.u<-  lapply(c(uvars7[-length(uvars7)]), function(v) vfreq(v, wvs|>filter(C_COW_NUM.f==c)))
   
-  rslt.r <- lapply(c(rvars[-length(rvars)]), function(v) wfreq2(v, wvs.s) )
+  rslt.r <- lapply(c(rvars7[-length(rvars7)]), function(v) wfreq2(v, wvs.s) )
   
     
   cat('### ', c, '\n')
@@ -19,7 +19,7 @@ for (c in levels(wvs$C_COW_NUM.f)) {
   
   
   for (i in 1:length(rslt.u)) {
-    cat('### ', labs[[c(uvars,dvars)[i]]], '\n')
+    cat('### ', labs7[[c(uvars7,dvars7)[i]]], '\n')
     
     cat(paste0("#### **Unweighted frequencies**", '\n'))
     print(rslt.u[[i]])
