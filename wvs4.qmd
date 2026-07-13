@@ -33,11 +33,11 @@ wvs<-droplevels(wvs.raw |>
 |Name|Variable label|Valid responses |
 |----|---------------|----------------|
 cow| `{r} attr(wvs$cow, "label")` |`{r} prettyNum(as.numeric(table(is.na(wvs$cow>0)))[1],big.mark = ",")`
-V139|`{r} attr(wvs$V139, "label")`|`{r} prettyNum(as.numeric(table((wvs$V139>0)))[2],big.mark = ",")`
-V36|`{r} attr(wvs$V36, "label")`|`{r} prettyNum(as.numeric(table((wvs$V36>0)))[2],big.mark = ",")`
-V223|`{r} attr(wvs$V223, "label")`|`{r} prettyNum(as.numeric(table((wvs$V223>0)))[2],big.mark = ",")` 
-V225|`{r} attr(wvs$V225, "label")` |`{r} prettyNum(as.numeric(table((wvs$V225>0)))[2],big.mark = ",")` 
-V226|`{r} attr(wvs$V226, "label")`|`{r} prettyNum(as.numeric(table((wvs$V226>0)))[2],big.mark = ",")`
+V139|`{r} attr(wvs$V139, "label")`|`{r} prettyNum(as.numeric(table((wvs$V139>0))),big.mark = ",")`
+V36|`{r} attr(wvs$V36, "label")`|`{r} prettyNum(as.numeric(table((wvs$V36>0))),big.mark = ",")`
+V223|`{r} attr(wvs$V223, "label")`|`{r} prettyNum(as.numeric(table((wvs$V223>0))),big.mark = ",")` 
+V225|`{r} attr(wvs$V225, "label")` |`{r} prettyNum(as.numeric(table((wvs$V225>0))),big.mark = ",")` 
+V226|`{r} attr(wvs$V226, "label")`|`{r} prettyNum(as.numeric(table((wvs$V226>0))),big.mark = ",")`
 
 
 : **Table 1: Original and derived variables used in the analysis** {tbl-colwidths="[25,70,5]"}

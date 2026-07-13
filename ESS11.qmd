@@ -3,7 +3,7 @@
 This document presents univariate and bivariate tables   of environmental attitudes  among Round 11 respondents  of the European Social Survey  (2023-24) 
 
 
-```{r data}
+```{r data,message=FALSE}
 
 rm(list=ls())
 
